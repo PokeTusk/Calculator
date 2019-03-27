@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean startedTypingSecNum = false;
     public char operationSign = ' ';
     public OPERATION operation = OPERATION.NONE;
+    String calcHistory = " ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public void addNumToHistory(String num) {
+        calcHistory += ' ' + num;
+    }
+
+    public void updateHistory() {
+        calcHistory +=  ' ' + operationSign;
+    }
+
     public void update() {
+        /*
         String finalText;
         finalText = String.valueOf(firstNum);
         if(operation != OPERATION.NONE) {
@@ -44,8 +54,22 @@ public class MainActivity extends AppCompatActivity {
             finalText += "=\n";
             finalText += result;
         }
-        TextView screenViev =findViewById(R.id.textView);
-        screenViev.setText(finalText);
+        TextView screenView =findViewById(R.id.resultView);
+        screenView.setText(finalText);
+        */
+        String currentNum;
+        if(isCalculated) {
+            currentNum = result;
+        } else if (startedTypingSecNum){
+            currentNum = secondNum;
+        }
+        else {
+            currentNum = firstNum;
+        }
+        TextView resultView =findViewById(R.id.resultView);
+        resultView.setText(currentNum);
+        TextView historyView =findViewById(R.id.calculationView);
+        historyView.setText(calcHistory);
     }
 
     public  void restart()
@@ -55,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         isCalculated = false;
         operation = OPERATION.NONE;
         startedTypingSecNum = false;
+        calcHistory = " ";
     }
 
     public void calculate()
@@ -114,10 +139,13 @@ public class MainActivity extends AppCompatActivity {
     }
         void nextCalculation(OPERATION newOperation) {
             calculate();
+            addNumToHistory(secondNum);
             String newFNum = result;
+            String histTemp = calcHistory;
             restart();
             firstNum = newFNum;
             operation = newOperation;
+            calcHistory = histTemp;
             update();
         }
     //methods used, when a button is pressed
@@ -163,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void equal(View view) {
+        calcHistory = " ";
         calculate();
     }
 
@@ -190,10 +219,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void decPoint(View view) {
         if(operation == OPERATION.NONE) {
-            firstNum+='.';
+            if(!firstNum.contains(".")) {
+                firstNum += '.';
+            }
         }
         else {
-            secondNum+='.';
+            if(!secondNum.contains(".")) {
+                secondNum += '.';
+            }
         }
         update();
     }
@@ -204,8 +237,10 @@ public class MainActivity extends AppCompatActivity {
             nextCalculation(OPERATION.ADDITION);
         }
         else {
+            addNumToHistory(firstNum);
             operation = OPERATION.ADDITION;
         }
+        updateHistory();
         update();
     }
 
@@ -215,8 +250,10 @@ public class MainActivity extends AppCompatActivity {
             nextCalculation(OPERATION.SUBTRACTION);
         }
         else {
+            addNumToHistory(firstNum);
             operation = OPERATION.SUBTRACTION;
         }
+        updateHistory();
         update();
     }
 
@@ -226,8 +263,10 @@ public class MainActivity extends AppCompatActivity {
             nextCalculation(OPERATION.MULTIPLICATION);
         }
         else {
+            addNumToHistory(firstNum);
             operation = OPERATION.MULTIPLICATION;
         }
+        updateHistory();
         update();
     }
 
@@ -237,8 +276,10 @@ public class MainActivity extends AppCompatActivity {
             nextCalculation(OPERATION.DIVISION);
         }
         else {
+            addNumToHistory(firstNum);
             operation = OPERATION.DIVISION;
         }
+        updateHistory();
         update();
     }
 
