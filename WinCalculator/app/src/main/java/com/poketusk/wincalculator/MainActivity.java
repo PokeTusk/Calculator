@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateHistory() {
-        calcHistory +=  ' ' + operationSign;
+        calcHistory +=  ' ';
+        calcHistory += operationSign;
     }
 
     public void update() {
